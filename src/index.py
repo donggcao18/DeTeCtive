@@ -14,9 +14,11 @@ from tqdm import tqdm
 
 class Indexer(object):
 
-    def __init__(self, vector_sz):
+    def __init__(self, vector_sz,device='cuda'):
         self.index = faiss.IndexFlatIP(vector_sz)
-        self.index = faiss.index_cpu_to_all_gpus(self.index)
+        self.device = device
+        if self.device == 'cuda':
+            self.index = faiss.index_cpu_to_all_gpus(self.index)
         self.index_id_to_db_id = []
 
     def index_data(self, ids, embeddings):
@@ -46,7 +48,10 @@ class Indexer(object):
         index_file = os.path.join(dir_path, 'index.faiss')
         meta_file = os.path.join(dir_path, 'index_meta.faiss')
         print(f'Serializing index to {index_file}, meta data to {meta_file}')
-        save_index = faiss.index_gpu_to_cpu(self.index)
+        if self.device == 'cuda':
+            save_index = faiss.index_gpu_to_cpu(self.index)
+        else:
+            save_index = self.index
         faiss.write_index(save_index, index_file)
         with open(meta_file, mode='wb') as f:
             pickle.dump(self.index_id_to_db_id, f)
@@ -57,7 +62,8 @@ class Indexer(object):
         print(f'Loading index from {index_file}, meta data from {meta_file}')
 
         self.index = faiss.read_index(index_file)
-        self.index = faiss.index_cpu_to_all_gpus(self.index)
+        if self.device == 'cuda':
+            self.index = faiss.index_cpu_to_all_gpus(self.index)
         print('Loaded index of type %s and size %d', type(self.index), self.index.ntotal)
 
         with open(meta_file, "rb") as reader:
