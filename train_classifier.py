@@ -327,41 +327,118 @@ def train(opt):
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--device_num', type=int, default=8, help="GPU number to use")
-    parser.add_argument('--projection_size', type=int, default=768, help="Pretrained model output dim")
-    parser.add_argument("--temperature", type=float, default=0.07, help="contrastive loss temperature")
-    parser.add_argument('--num_workers', type=int, default=8, help="num_workers for dataloader")
-    parser.add_argument("--per_gpu_batch_size", default=32, type=int, help="Batch size per GPU for training.")
-    parser.add_argument(
-        "--per_gpu_eval_batch_size", default=64, type=int, help="Batch size per GPU for evaluation."
-    )
+    parser.add_argument('--device_num',
+                         type=int, 
+                         default=8, 
+                         help="GPU number to use")
+    parser.add_argument('--projection_size', 
+                        type=int, 
+                        default=768, 
+                        help="Pretrained model output dim")
+    parser.add_argument("--temperature", 
+                        type=float, 
+                        default=0.07, 
+                        help="contrastive loss temperature")
+    parser.add_argument('--num_workers', 
+                        type=int, 
+                        default=8, 
+                        help="num_workers for dataloader")
+    parser.add_argument("--per_gpu_batch_size", 
+                        default=32, 
+                        type=int, 
+                        help="Batch size per GPU for training.")
+    parser.add_argument("--per_gpu_eval_batch_size", 
+                        default=64, 
+                        type=int, 
+                        help="Batch size per GPU for evaluation.")
 
-    parser.add_argument("--dataset", type=str, default="deepfake", help="deepfake,OUTFOX,TuringBench,M4")
-    parser.add_argument("--path", type=str, default="/home/heyongxin/LLM_detect_data/Deepfake_dataset/cross_domains_cross_models")
-    parser.add_argument('--database_name', type=str, default='train', help="train,valid,test,test_ood")
-    parser.add_argument('--test_dataset_name', type=str, default='test', help="train,valid,test,test_ood")
-    parser.add_argument('--topk', type=int, default=10, help="Search topk nearest neighbors for validation")
+    parser.add_argument("--dataset", 
+                        type=str, 
+                        default="deepfake", 
+                        help="deepfake,OUTFOX,TuringBench,M4")
+    #path to retrieve dataset
+    parser.add_argument("--path", 
+                        type=str, 
+                        default="/home/heyongxin/LLM_detect_data/Deepfake_dataset/cross_domains_cross_models")
+    parser.add_argument('--database_name', 
+                        type=str, 
+                        default='train', 
+                        help="train,valid,test,test_ood")
+    parser.add_argument('--test_dataset_name', 
+                        type=str, 
+                        default='test', 
+                        help="train,valid,test,test_ood")
+    parser.add_argument('--topk', 
+                        type=int, 
+                        default=10, 
+                        help="Search topk nearest neighbors for validation")
 
-    parser.add_argument('--a', type=float, default=1)
-    parser.add_argument('--b', type=float, default=1) 
-    parser.add_argument('--c', type=float, default=1)
-    parser.add_argument('--d', type=float, default=1,help="classifier loss weight")
-    parser.add_argument('--classifier_dim', type=int, default=2,help="classifier out dim")
-    parser.add_argument("--AA",action='store_true',help="task for finding text source")
+    parser.add_argument('--a', 
+                        type=float, 
+                        default=1)
+    parser.add_argument('--b', 
+                        type=float, 
+                        default=1) 
+    parser.add_argument('--c', 
+                        type=float, 
+                        default=1)
+    parser.add_argument('--d', 
+                        type=float, 
+                        default=1,
+                        help="classifier loss weight")
+    parser.add_argument('--classifier_dim', 
+                        type=int, 
+                        default=2,
+                        help="classifier out dim")
+    parser.add_argument("--AA",
+                        action='store_true',
+                        help="task for finding text source")
 
-    parser.add_argument("--total_epoch", type=int, default=50, help="Total number of training epochs")
-    parser.add_argument("--warmup_steps", type=int, default=2000, help="Warmup steps")
-    parser.add_argument("--optim", type=str, default="adamw")
-    parser.add_argument("--lr", type=float, default=2e-5, help="learning rate")
-    parser.add_argument("--weight_decay", type=float, default=0.0001, help="weight decay")
-    parser.add_argument("--beta1", type=float, default=0.9, help="beta1")
-    parser.add_argument("--beta2", type=float, default=0.98, help="beta2")
-    parser.add_argument("--eps", type=float, default=1e-6, help="eps")
-    parser.add_argument("--savedir", type=str, default="./runs")
-    parser.add_argument("--name", type=str, default='deepfake')
+    parser.add_argument("--total_epoch", 
+                        type=int, 
+                        default=50, 
+                        help="Total number of training epochs")
+    parser.add_argument("--warmup_steps", 
+                        type=int, 
+                        default=2000, 
+                        help="Warmup steps")
+    parser.add_argument("--optim", 
+                        type=str, 
+                        default="adamw")
+    parser.add_argument("--lr", 
+                        type=float, 
+                        default=2e-5, 
+                        help="learning rate")
+    parser.add_argument("--weight_decay", 
+                        type=float, 
+                        default=0.0001, 
+                        help="weight decay")
+    parser.add_argument("--beta1", 
+                        type=float, 
+                        default=0.9, 
+                        help="beta1")
+    parser.add_argument("--beta2", 
+                        type=float, 
+                        default=0.98, 
+                        help="beta2")
+    parser.add_argument("--eps", 
+                        type=float, 
+                        default=1e-6, 
+                        help="eps")
+    parser.add_argument("--savedir", 
+                        type=str, 
+                        default="./runs")
+    parser.add_argument("--name", 
+                        type=str, 
+                        default='deepfake')
 
-    parser.add_argument("--resum", type=bool, default=False)
-    parser.add_argument("--pth_path", type=str, default='', help="resume embedding model path")
+    parser.add_argument("--resum", 
+                        type=bool, 
+                        default=False)
+    parser.add_argument("--pth_path", 
+                        type=str, 
+                        default='', 
+                        help="resume embedding model path")
 
     #google/flan-t5-base 768
     #mixedbread-ai/mxbai-embed-large-v1 1024
@@ -371,11 +448,19 @@ if __name__ == "__main__":
     #e5-base-unsupervised 768
     #nomic-ai/nomic-embed-text-v1-unsupervised 768
     #facebook/mcontriever 768
-    parser.add_argument('--model_name', type=str, default='princeton-nlp/unsup-simcse-roberta-base')
+    parser.add_argument('--model_name', 
+                        type=str, 
+                        default='princeton-nlp/unsup-simcse-roberta-base')
     # parser.add_argument('--freeze_layer', type=int, default=0, help="freeze layer, 0 means no freeze, 12 means all freeze,10 means freeze first 10 layers")
-    parser.add_argument("--freeze_embedding_layer",action='store_true',help="freeze embedding layer")
-    parser.add_argument("--one_loss",action='store_true',help="only use single contrastive loss")
-    parser.add_argument("--only_classifier", action='store_true',help="only use classifier, no contrastive loss")
+    parser.add_argument("--freeze_embedding_layer",
+                        action='store_true',
+                        help="freeze embedding layer")
+    parser.add_argument("--one_loss",
+                        action='store_true',
+                        help="only use single contrastive loss")
+    parser.add_argument("--only_classifier", 
+                        action='store_true',
+                        help="only use classifier, no contrastive loss")
     opt = parser.parse_args()
     tokenizer = AutoTokenizer.from_pretrained(opt.model_name)
     train(opt)
